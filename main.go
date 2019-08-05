@@ -7,6 +7,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"regexp"
+	"strings"
 
 	"github.com/urfave/cli"
 )
@@ -16,6 +18,7 @@ func main() {
 	app.Name = "odns-updater"
 	app.Usage = "Update OpenDNS ip"
 	app.Version = "1.0.0"
+	app.HideVersion = true
 
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
@@ -23,7 +26,7 @@ func main() {
 			Usage:    "Username used for authentication",
 			Required: true,
 		},
-		cli.StringFlag{
+		cli.StringSliceFlag{
 			Name:     "password, p",
 			Usage:    "Password used for authentication",
 			Required: true,
@@ -40,18 +43,9 @@ func main() {
 	var network string
 
 	app.Action = func(c *cli.Context) error {
-
-		if len(c.String("username")) > 0 {
-			username = c.String("u")
-		}
-
-		if len(c.String("password")) > 0 {
-			password = c.String("p")
-		}
-
-		if len(c.String("network")) > 0 {
-			network = c.String("n")
-		}
+		username = c.String("u")
+		password = c.String("p")
+		network = c.String("n")
 
 		return nil
 	}
@@ -61,10 +55,16 @@ func main() {
 		log.Fatal(err)
 	}
 
-	basicAuth(username, password, network)
+	match, _ := regexp.MatchString("\\[.+\\]", password)
+	if match == true {
+		replacer := strings.NewReplacer("[", "", "]", "")
+		password = replacer.Replace(password)
+	}
+
+	BasicAuth(username, password, network)
 }
 
-func basicAuth(username string, password string, network string) {
+func BasicAuth(username string, password string, network string) {
 	reqUrl := fmt.Sprintf("https://updates.opendns.com/nic/update?hostname=%s", network)
 
 	client := &http.Client{}

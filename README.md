@@ -21,6 +21,6 @@ GLOBAL OPTIONS:
    `
 
 # How to update automatically
-Download binary and do something like this to cron:
+Download binary and do something like this in cron:
 
     */10 * * * * /home/foo/opendns-updater-go -u <username> -p <password> -n <network>
