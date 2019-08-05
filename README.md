@@ -1,4 +1,4 @@
-`
+```
 > opendns-updater-go
 NAME:
    odns-updater - Update OpenDNS ip
@@ -18,7 +18,7 @@ GLOBAL OPTIONS:
    --network value, -n value   Name of network you want to update
    --help, -h                  show help
    --version, -v               print the version
-   `
+```
 
 # How to update automatically
 Download binary and do something like this in cron:
